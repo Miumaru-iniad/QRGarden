@@ -7,9 +7,11 @@
 </head>
 <body>
     <h1>{{name}}の栽培スケジュール</h1>
-    <form>
-        <label>種まき日</label>
+    <form method="post" action="{% url 'calendar_api' %}">
+        {% csrf_token %}
+        <label for="start_date">種まき日</label>
         <input type="date" name="start_date" id="start_date">
+        <button type="submit">送信</button>
     </form>
     <ul>
         <li>~ 種まき
