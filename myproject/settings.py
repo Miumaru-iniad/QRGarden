@@ -124,7 +124,7 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 ALLOWED_HOSTS = [
-    "54.153.113.193"
+    "54.153.113.193",
     '403bb8645a0b463cbbef8fc76f74b11e.vfs.cloud9.us-west-1.amazonaws.com',  # Cloud9 のドメインを追加
     'localhost',
     '127.0.0.1',
