@@ -9,13 +9,13 @@ name_list = {'tomato': 'トマト'}
 
 def top(request, name):
     params = {
-        'name': name,
+        'name': name_list[name],
     }
     return render(request, 'myapp/top.html', params)
 
 def chat(request, name):
     params = {
-        'name': name,
+        'name': name_list[name],
     }
     return render(request, 'myapp/chat.html', params)
 
