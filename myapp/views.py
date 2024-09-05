@@ -65,7 +65,7 @@ def generate_response(user_question):
     # プロンプトテンプレート
     template = """
     関連するドキュメントを基に、回答を生成してください。
-
+    マークダウン記法は使用しないでください。
     # {context}
 
     Question : {question}
@@ -111,8 +111,8 @@ def chat(request, crop_name_en):
             request.session['chat_history'].append({'sender': 'bot', 'message': bot_response})
 
             # 最大3往復（6メッセージ）まで保持
-            if len(request.session['chat_history']) > 6:
-                request.session['chat_history'] = request.session['chat_history'][-6:]
+            if len(request.session['chat_history']) > 2:
+                request.session['chat_history'] = request.session['chat_history'][-2:]
 
             # セッションの変更を保存
             request.session.modified = True
