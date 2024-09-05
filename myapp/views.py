@@ -4,30 +4,33 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from datetime import datetime, timedelta
 import os
-from myproject.settings import BASE_DIR
+from django.conf import settings
 
 # Create your views here.
 name_list = {'tomato': 'トマト'}
 
-def top(request, name):
+def top(request, crop_name_en):
     params = {
-        'name': name_list[name],
+        'crop_name_en': crop_name_en,
+        'crop_name_ja': name_list[crop_name_en],
     }
     return render(request, 'myapp/top.html', params)
 
-def chat(request, name):
+def chat(request, crop_name_en):
     params = {
-        'name': name_list[name],
+        'crop_name_en': crop_name_en,
+        'crop_name_ja': name_list[crop_name_en],
     }
     return render(request, 'myapp/chat.html', params)
 
-def schedule(request, name):
+def schedule(request, crop_name_en):
     params = {
-        'name': name_list[name],
+        'crop_name_en': crop_name_en,
+        'crop_name_ja': name_list[crop_name_en],
     }
     return render(request, 'myapp/schedule.html', params)
 
-def calendar_api(request):
+def calendar_api(request, crop_name_en): #トマト
     if request.method == 'POST':
         start_date_str = request.POST.get('start_date')
         if start_date_str:
@@ -37,7 +40,7 @@ def calendar_api(request):
         SCOPES = ['https://www.googleapis.com/auth/calendar']
 
         # ユーザー認証を行いAPIクライアントを作成
-        flow = InstalledAppFlow.from_client_secrets_file(os.path.join('BASE_DIR', '/myapp/credentials.json'), SCOPES)
+        flow = InstalledAppFlow.from_client_secrets_file('credentials.json', SCOPES)
         creds = flow.run_local_server(port=0)
 
         service = build('calendar', 'v3', credentials=creds)
@@ -74,3 +77,5 @@ def calendar_api(request):
         for event in events:
             created_event = service.events().insert(calendarId='primary', body=event).execute()
             print('Event created: %s' % (created_event.get('htmlLink'))) 
+        
+        return redirect(os.path.join(settings.REDIRECT_URL, crop_name_en))
