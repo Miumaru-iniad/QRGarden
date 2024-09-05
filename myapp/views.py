@@ -1,7 +1,5 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from google_auth_oauthlib.flow import InstalledAppFlow
-from googleapiclient.discovery import build
 import datetime
 
 # Create your views here.
