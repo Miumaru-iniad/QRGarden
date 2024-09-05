@@ -9,7 +9,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body>
-    <div class="drawer">
+    <div class="z-50 drawer">
         <input id="my-drawer-3" type="checkbox" class="drawer-toggle" />
         <div class="drawer-content flex flex-col">
             <!-- Navbar -->
@@ -33,8 +33,6 @@
                     </ul>
                 </div>
             </div>
-            <!-- Page content here -->
-            Content
         </div>
         <div class="drawer-side">
             <label for="my-drawer-3" aria-label="close sidebar" class="drawer-overlay"></label>
@@ -46,12 +44,53 @@
             </ul>
         </div>
     </div>
-    <h1>{{crop_name_ja}}のtop</h1>
-    <img src="hoge" alt="tomato">
-    <h1>アイコトマトとは?</h1>
-    <p>「アイコ」は赤く細長い形のミニトマトです。ゼリー部分が少ないためサクサクとした食感を楽しむことができます。そ
-        のまま召し上がるも良し、加熱してソースにしても良しの万能選手です。</p>
-    <img src="hoge" alt="農家の写真">
-    <button id="chalender button" type="button">カレンダーで収穫時期を知る</button>
+    <!-- Hero Section -->
+    <section class="w-full h-96 bg-cover bg-center relative"
+        style="background-image: url('{% static 'img/tomato_photo.jpg' %}');">
+        <div class="flex items-center justify-center h-full bg-gradient-to-r from-red-500/70 to-yellow-500/70">
+            <h1 class="text-white text-5xl font-bold tracking-wide drop-shadow-lg">赤羽トマト</h1>
+        </div>
+    
+    </section>
+    
+    <!-- Introduction Section -->
+    <section class="container mx-auto my-10 px-5">
+        <div class="bg-yellow-100 p-6 rounded-lg shadow-md">
+            <h2 class="text-3xl font-bold text-red-500 mb-4">鮮やかでユニークなトマト</h2>
+            <p class="text-lg leading-relaxed">
+                赤羽トマトはその鮮やかな外見と、甘さと酸味の絶妙なバランスで知られています。生食でも、料理に使っても最高です！
+            </p>
+        </div>
+    </section>
+    
+    <!-- Appearance Section -->
+    <section class="container mx-auto my-10 px-5">
+        <div class="bg-red-100 p-6 rounded-lg shadow-md">
+            <h2 class="text-2xl font-semibold text-red-600 mb-4">外見の特徴</h2>
+            <p class="text-lg leading-relaxed mb-4">
+                このトマトは鮮やかな赤にほんのりと金色の輝きが加わり、日光を浴びるとさらに美しく見えます。形は細長く、通常のトマトよりもやや小ぶりで握りやすいサイズです。
+            </p>
+        </div>
+    </section>
+    
+    <!-- Taste Section -->
+    <section class="container mx-auto my-10 px-5">
+        <div class="bg-blue-100 p-6 rounded-lg shadow-md">
+            <h2 class="text-2xl font-semibold text-blue-600 mb-4">甘さと酸味の絶妙なバランス</h2>
+            <p class="text-lg leading-relaxed mb-4">
+                赤羽トマトの味は、糖度が高くフルーツのような甘みがあります。サラダや前菜として、そのまま食べても料理に加えても美味しさが際立ちます。
+            </p>
+        </div>
+    </section>
+    
+    <!-- Origin Section -->
+    <section class="container mx-auto my-10 px-5">
+        <div class="bg-green-100 p-6 rounded-lg shadow-md">
+            <h2 class="text-2xl font-semibold text-green-600 mb-4">北の大地からの贈り物</h2>
+            <p class="text-lg leading-relaxed mb-4">
+                日本の北部の冷涼な気候で栽培された赤羽トマトは、寒さに強く、涼しい環境でもしっかりと育ちます。この特有の環境が、美味しさと外見を引き出しています。
+            </p>
+        </div>
+    </section>
 </body>
 </html>
