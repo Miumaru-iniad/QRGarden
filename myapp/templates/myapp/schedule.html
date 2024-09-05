@@ -1,15 +1,56 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>schedule</title>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body>
+    <div class="drawer">
+        <input id="my-drawer-3" type="checkbox" class="drawer-toggle" />
+        <div class="drawer-content flex flex-col">
+            <!-- Navbar -->
+            <div class="navbar bg-base-300 w-full bg-[#CA3B3B]">
+                <div class="flex-none lg:hidden">
+                    <label for="my-drawer-3" aria-label="open sidebar" class="btn btn-square btn-ghost">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                            class="inline-block h-6 w-6 stroke-current stroke-white">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" fill="#ffffff"
+                                d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </label>
+                </div>
+                <div class="mx-2 flex-1 px-2 text-white">INIAD FOODS</div>
+                <div class="hidden flex-none lg:block">
+                    <ul class="menu menu-horizontal">
+                        <!-- Navbar menu content here -->
+                        <li class="text-white"><a href="{% url 'top' name='tomato' %}">トマトについて知る</a></li>
+                        <li class="text-white"><a href="{% url 'chat' name='tomato' %}">AIに育て方を聞く</a></li>
+                        <li class="text-white"><a href="{% url 'schedule' name='tomato' %}">スケジュールを確認</a></li>
+                    </ul>
+                </div>
+            </div>
+            <!-- Page content here -->
+            Content
+        </div>
+        <div class="drawer-side">
+            <label for="my-drawer-3" aria-label="close sidebar" class="drawer-overlay"></label>
+            <ul class="menu bg-base-200 min-h-full w-80 p-4">
+                <!-- Sidebar content here -->
+                <li class="text-[#CA3B3B]"><a href="{% url 'top' name='tomato' %}">トマトについて知る</a></li>
+                <li class="text-[#CA3B3B]"><a href="{% url 'chat' name='tomato' %}">AIに育て方を聞く</a></li>
+                <li class="text-[#CA3B3B]"><a href="{% url 'schedule' name='tomato' %}">スケジュールを確認</a></li>
+            </ul>
+        </div>
+    </div>
     <h1>{{crop_name_ja}}の栽培スケジュール</h1>
     <form method="post" action="{% url 'calendar_api' crop_name_en %}">
         {% csrf_token %}
         <label for="start_date">種まき日</label>
+
         <input type="date" name="start_date" id="start_date">
         <button type="submit">送信</button>
     </form>
