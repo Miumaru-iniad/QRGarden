@@ -52,7 +52,7 @@
     <div class="chat-container">
         <div class="messages" id="chat-messages">
             {% for message in chat_history %}
-                <div class="message {{ message.sender }}">
+                <div class="message {% if message.sender == 'user' %}message-user{% else %}message-bot{% endif %}">
                     <div class="message-content">
                         {{ message.message }}
                     </div>
