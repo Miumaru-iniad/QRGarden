@@ -5,24 +5,13 @@ from googleapiclient.discovery import build
 from datetime import datetime, timedelta
 import os
 from django.conf import settings
-
-# Create your views here.
-name_list = {'tomato': 'トマト'}
-
-def top(request, crop_name_en):
-    params = {
-        'crop_name_en': crop_name_en,
-        'crop_name_ja': name_list[crop_name_en],
-    }
-    return render(request, 'myapp/top.html', params)
-
-from django.shortcuts import render, redirect
-from django.http import HttpResponse
-from google_auth_oauthlib.flow import InstalledAppFlow
-from googleapiclient.discovery import build
-from datetime import datetime, timedelta
-import os
-from django.conf import settings
+from langchain_openai import ChatOpenAI
+import qdrant_client
+from langchain_qdrant import Qdrant
+from langchain_openai import OpenAIEmbeddings
+from langchain_core.runnables import RunnablePassthrough
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.output_parsers import StrOutputParser
 
 name_list = {'tomato': 'トマト'}
 
