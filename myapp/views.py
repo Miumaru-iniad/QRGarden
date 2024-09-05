@@ -30,7 +30,7 @@ def schedule(request, crop_name_en):
     }
     return render(request, 'myapp/schedule.html', params)
 
-def calendar_api(request, crop_name_en): #トマト
+def calendar_api(request, crop_name_en):
     if request.method == 'POST':
         start_date_str = request.POST.get('start_date')
         if start_date_str:
@@ -78,4 +78,8 @@ def calendar_api(request, crop_name_en): #トマト
             created_event = service.events().insert(calendarId='primary', body=event).execute()
             print('Event created: %s' % (created_event.get('htmlLink'))) 
         
-        return redirect(os.path.join(settings.REDIRECT_URL, crop_name_en))
+        params = {
+            'crop_name_en': crop_name_en,
+            'crop_name_ja': name_list[crop_name_en],
+        }
+        return render(request, 'myapp/schedule.html', params)

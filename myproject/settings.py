@@ -15,8 +15,6 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-REDIRECT_URL = 'http://127.0.0.1:8000/'
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
@@ -26,7 +24,12 @@ SECRET_KEY = 'django-insecure-mb*h(ggocy#0_4-b!de%2k!llvw@g2b3an@n@+ha7khej^9hgy
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "54.153.113.193",
+    '403bb8645a0b463cbbef8fc76f74b11e.vfs.cloud9.us-west-1.amazonaws.com',  # Cloud9 のドメインを追加
+    'localhost',
+    '127.0.0.1',
+]
 
 
 # Application definition
@@ -124,9 +127,9 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-ALLOWED_HOSTS = [
-    "54.153.113.193",
-    '403bb8645a0b463cbbef8fc76f74b11e.vfs.cloud9.us-west-1.amazonaws.com',  # Cloud9 のドメインを追加
-    'localhost',
-    '127.0.0.1',
+CSRF_TRUSTED_ORIGINS = [
+    'https://403bb8645a0b463cbbef8fc76f74b11e.vfs.cloud9.us-west-1.amazonaws.com/',
+    'https://403bb8645a0b463cbbef8fc76f74b11e.vfs.cloud9.us-west-1.amazonaws.com',
+    'https://403bb8645a0b463cbbef8fc76f74b11e.vfs.cloud9.us-west-1.amazonaws.com/tomato/calendar_api/', 
+    'https://403bb8645a0b463cbbef8fc76f74b11e.vfs.cloud9.us-west-1.amazonaws.com/tomato/schedule/',
 ]
