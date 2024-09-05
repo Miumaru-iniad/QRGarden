@@ -5,15 +5,26 @@ from googleapiclient.discovery import build
 from datetime import datetime, timedelta
 import os
 from django.conf import settings
+
+# OpenAI関連のimport
 from langchain_openai import ChatOpenAI
-import qdrant_client
-from langchain_qdrant import Qdrant
 from langchain_openai import OpenAIEmbeddings
 from langchain_core.runnables import RunnablePassthrough
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 
+# ChromaDB関連のimport
+import chromadb
+from chromadb.config import Settings
+
+# Qdrant関連のimport
+import qdrant_client
+from langchain_qdrant import Qdrant
+
+from langchain.vectorstores import Chroma
+
 name_list = {'tomato': 'トマト'}
+
 
 def top(request, crop_name_en):
     params = {
@@ -22,22 +33,79 @@ def top(request, crop_name_en):
     }
     return render(request, 'myapp/top.html', params)
 
+
+# OpenAIのAPIキーとエンドポイント
+OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
+OPENAI_API_BASE = "https://api.openai.iniad.org/api/v1/"
+
+
+
+
+
+# ドキュメントのフォーマット
+def format_docs(docs):
+    return "\n\n".join([d.page_content for d in docs])
+
+# RAGによる回答生成
+def generate_response(user_question):
+
+    embeddings_model = OpenAIEmbeddings(
+    openai_api_base= OPENAI_API_BASE
+)
+    db = Chroma(persist_directory="DB",embedding_function=embeddings_model)
+
+    # OpenAI LLMの設定
+    LLM = ChatOpenAI(model_name="gpt-4o-mini", temperature=1, verbose=True, openai_api_key=OPENAI_API_KEY, openai_api_base=OPENAI_API_BASE)
+
+    # Qdrantから関連ドキュメントを取得
+    retriever = db.as_retriever()
+
+    # プロンプトテンプレート
+    template = """
+    関連するドキュメントを基に、回答を生成してください。
+
+    # {context}
+
+    Question : {question}
+    Answer : 
+    """
+    prompt = ChatPromptTemplate.from_template(template)
+
+    # チェーンの構築
+    chain = (
+        {"context": retriever | format_docs, "question": RunnablePassthrough()}
+        | prompt
+        | LLM
+        | StrOutputParser(verbose=True)
+    )
+
+    # ドキュメント検索と回答生成の実行
+    references = retriever.invoke(user_question)
+    if not references:
+        return "関連ドキュメントが見つかりませんでした。"
+
+    # RAGによる最終応答の生成
+    output_by_retriever = chain.invoke(user_question)
+
+    return output_by_retriever
+
 def chat(request, crop_name_en):
-    crop_name_ja = name_list.get(crop_name_en, "不明な作物")
+    crop_name_ja = "トマト"  # 例としてトマトに固定
     
     # セッションにチャット履歴がなければ初期化
     if 'chat_history' not in request.session:
         request.session['chat_history'] = []
 
     if request.method == 'POST':
-        # ユーザーのメッセージを取得
+        # ユーザーの質問を取得
         user_message = request.POST.get('message')
+
         if user_message:
+            # RAGで回答を生成
+            bot_response = generate_response(user_message)
+
             # ユーザーのメッセージを履歴に追加
             request.session['chat_history'].append({'sender': 'user', 'message': user_message})
-
-            # チャットボットの応答（ダミー）
-            bot_response = "これはチャットボットの応答です。"
             request.session['chat_history'].append({'sender': 'bot', 'message': bot_response})
 
             # 最大3往復（6メッセージ）まで保持
@@ -47,13 +115,14 @@ def chat(request, crop_name_en):
             # セッションの変更を保存
             request.session.modified = True
 
-        # 同じページにリダイレクトして入力フォームをリセット
-        return redirect('chat', crop_name_en=crop_name_en)
+            # リダイレクトしてフォームをリセット
+            return redirect('chat', crop_name_en=crop_name_en)
 
+    # チャット画面を表示
     params = {
         'crop_name_en': crop_name_en,
         'crop_name_ja': crop_name_ja,
-        'chat_history': request.session['chat_history']
+        'chat_history': request.session.get('chat_history', [])
     }
 
     return render(request, 'myapp/chat.html', params)
