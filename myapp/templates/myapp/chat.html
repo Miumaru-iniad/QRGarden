@@ -60,8 +60,8 @@
         <div class="input-container">
             <form method="post" action="{% url 'chat' crop_name_en=crop_name_en %}">
                 {% csrf_token %}
-                <input type="text" name="message" id="user-input" placeholder="メッセージを入力してください...">
-                <button type="submit">送信</button>
+                <input type="text" name="message" id="user-input" placeholder="メッセージを入力してください..." class="input input-bordered w-full max-w-xs mt-8 ml-8" />
+                <button class="btn btn-outline btn-info pl-10 pr-10" type="submit">送信</button>
             </form>
         </div>
     </div>
