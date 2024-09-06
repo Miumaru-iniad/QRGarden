@@ -25,7 +25,7 @@ from langchain_qdrant import Qdrant
 
 from langchain.vectorstores import Chroma
 
-name_list = {'tomato': 'トマト', 'daikon': '大根'}
+name_list = {'tomato': '赤羽トマト', 'daikon': '三十日大根'}
 tasks = {
     'tomato': {
         'total': 4,
@@ -37,12 +37,11 @@ tasks = {
         ]
     },
     'daikon': {
-        'total': 4,
+        'total': 3,
         'tasks': [
             [0, 0, '種まき'], #栽培開始日からの経過日数, 期間, タスク
-            [14, 7, '追肥'],
-            [28, 7, '追肥'],
-            [90, 7, '収穫'],
+            [3, 3, '間引き'],
+            [28, 7, '収穫'],
         ]
     },
 }
@@ -109,7 +108,21 @@ def generate_response(user_question):
     # RAGによる最終応答の生成
     output_by_retriever = chain.invoke(user_question)
 
+    # ここからリンク埋め込み処理を追加
+    products = {
+        "INIAD-UP": "https://iniad-crops-seles.vercel.app/product/up",
+        "INIA土": "https://iniad-crops-seles.vercel.app/product/soil",
+        "INIAD-BUG-BLOCKER": "https://iniad-crops-seles.vercel.app/product/bug-blocker"
+    }
+
+    # 回答中に製品名が含まれていた場合、リンクに置換し、改行されず、新しいタブで開くように設定
+    for product, url in products.items():
+        output_by_retriever = output_by_retriever.replace(
+            product, f'<a href="{url}" target="_blank" style="color: blue; white-space: nowrap;">{product}</a>'
+        )
+
     return output_by_retriever
+
 
 def chat(request, crop_name_en):
     crop_name_ja = "トマト"  # 例としてトマトに固定
@@ -130,7 +143,6 @@ def chat(request, crop_name_en):
             request.session['chat_history'].append({'sender': 'user', 'message': user_message})
             request.session['chat_history'].append({'sender': 'bot', 'message': bot_response})
 
-            # 最大3往復（6メッセージ）まで保持
             if len(request.session['chat_history']) > 2:
                 request.session['chat_history'] = request.session['chat_history'][-2:]
 
@@ -198,7 +210,6 @@ def oauth2callback(request):
         'client_secret': credentials.client_secret,
         'scopes': credentials.scopes
     }
-    
     return redirect('calendar_api', crop_name_en='tomato')
 
 # Google Calendar APIにアクセス
