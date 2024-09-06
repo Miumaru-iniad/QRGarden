@@ -89,7 +89,21 @@ def generate_response(user_question):
     # RAGによる最終応答の生成
     output_by_retriever = chain.invoke(user_question)
 
+    # ここからリンク埋め込み処理を追加
+    products = {
+        "INIAD-UP": "https://iniad-crops-seles.vercel.app/product/up",
+        "INIA土": "https://iniad-crops-seles.vercel.app/product/soil",
+        "INIAD-BUG-BLOCKER": "https://iniad-crops-seles.vercel.app/product/bug-blocker"
+    }
+
+    # 回答中に製品名が含まれていた場合、リンクに置換し、改行されず、新しいタブで開くように設定
+    for product, url in products.items():
+        output_by_retriever = output_by_retriever.replace(
+            product, f'<a href="{url}" target="_blank" style="color: blue; white-space: nowrap;">{product}</a>'
+        )
+
     return output_by_retriever
+
 
 def chat(request, crop_name_en):
     crop_name_ja = "トマト"  # 例としてトマトに固定
@@ -110,7 +124,6 @@ def chat(request, crop_name_en):
             request.session['chat_history'].append({'sender': 'user', 'message': user_message})
             request.session['chat_history'].append({'sender': 'bot', 'message': bot_response})
 
-            # 最大3往復（6メッセージ）まで保持
             if len(request.session['chat_history']) > 2:
                 request.session['chat_history'] = request.session['chat_history'][-2:]
 

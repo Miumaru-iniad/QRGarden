@@ -52,7 +52,7 @@
             {% for message in chat_history %}
                 <div class="message mt-8 {% if message.sender == 'user' %}chat-start{% else %}card bg-base-300{% endif %}">
                     <div class="message-content {% if message.sender == 'user' %}chat-bubble chat-bubble-error{% else %}card-body{% endif %}">
-                        {{ message.message }}
+                        {{ message.message|safe }}
                     </div>
                 </div>
             {% endfor %}
