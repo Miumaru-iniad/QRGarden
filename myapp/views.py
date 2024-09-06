@@ -25,7 +25,7 @@ from langchain_qdrant import Qdrant
 
 from langchain.vectorstores import Chroma
 
-name_list = {'tomato': 'トマト', 'daikon': '大根'}
+name_list = {'tomato': '赤羽トマト', 'daikon': '三十日大根'}
 tasks = {
     'tomato': {
         'total': 4,
@@ -37,12 +37,11 @@ tasks = {
         ]
     },
     'daikon': {
-        'total': 4,
+        'total': 3,
         'tasks': [
             [0, 0, '種まき'], #栽培開始日からの経過日数, 期間, タスク
-            [14, 7, '追肥'],
-            [28, 7, '追肥'],
-            [90, 7, '収穫'],
+            [3, 3, '間引き'],
+            [28, 7, '収穫'],
         ]
     },
 }
@@ -211,7 +210,6 @@ def oauth2callback(request):
         'client_secret': credentials.client_secret,
         'scopes': credentials.scopes
     }
-    
     return redirect('calendar_api', crop_name_en='tomato')
 
 # Google Calendar APIにアクセス
