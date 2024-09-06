@@ -25,7 +25,27 @@ from langchain_qdrant import Qdrant
 
 from langchain.vectorstores import Chroma
 
-name_list = {'tomato': 'トマト'}
+name_list = {'tomato': 'トマト', 'daikon': '大根'}
+tasks = {
+    'tomato': {
+        'total': 4,
+        'tasks': [
+            [0, 0, '種まき'], #栽培開始日からの経過日数, 期間, タスク
+            [14, 7, '追肥'],
+            [28, 7, '追肥'],
+            [90, 7, '収穫'],
+        ]
+    },
+    'daikon': {
+        'total': 4,
+        'tasks': [
+            [0, 0, '種まき'], #栽培開始日からの経過日数, 期間, タスク
+            [14, 7, '追肥'],
+            [28, 7, '追肥'],
+            [90, 7, '収穫'],
+        ]
+    },
+}
 
 
 def top(request, crop_name_en):
@@ -133,6 +153,8 @@ def schedule(request, crop_name_en):
     params = {
         'crop_name_en': crop_name_en,
         'crop_name_ja': name_list[crop_name_en],
+        'tasksTotal': tasks[crop_name_en]['total'],
+        'tasks': tasks[crop_name_en]['tasks'] #二次元配列
     }
     return render(request, 'myapp/schedule.html', params)
 
@@ -198,41 +220,44 @@ def calendar_api(request, crop_name_en):
     service = build('calendar', 'v3', credentials=creds)
 
     if request.method == 'POST':
+        # フォームから送信された開始日を取得
         start_date_str = request.POST.get('start_date')
         if start_date_str:
             start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
 
-        events = [
-            {
-                'summary': '種まき',
-                'description': '種をまきましょう\nexample.com',
-                'start': {
-                    'date': start_date.strftime('%Y-%m-%d'),
-                    'timeZone': 'Asia/Tokyo',
-                },
-                'end': {
-                    'date': (start_date + timedelta(days=1)).strftime('%Y-%m-%d'),
-                    'timeZone': 'Asia/Tokyo',
-                },
-            },
-            {
-                'summary': '追肥',
-                'description': '追肥をしましょう\nexample.com',
-                'start': {
-                    'date': (start_date + timedelta(days=10)).strftime('%Y-%m-%d'),
-                    'timeZone': 'Asia/Tokyo',
-                },
-                'end': {
-                    'date': (start_date + timedelta(days=15)).strftime('%Y-%m-%d'),
-                    'timeZone': 'Asia/Tokyo',
-                },
-            },
-        ]
+        # タスク情報を取得
+        crop_tasks = tasks[crop_name_en]['tasks']
 
+        # Google Calendarに追加するイベントのリストを生成
+        events = []
+        for task in crop_tasks:
+            days_from_start = task[0]
+            duration = task[1]
+            task_name = task[2]
+
+            # イベントの開始日と終了日を計算
+            start_event_date = start_date + timedelta(days=days_from_start)
+            end_event_date = start_event_date + timedelta(days=duration+1)
+
+            # イベントをリストに追加
+            events.append({
+                'summary': task_name,
+                'description': f'{task_name}をしましょう\nexample.com',
+                'start': {
+                    'date': start_event_date.strftime('%Y-%m-%d'),
+                    'timeZone': 'Asia/Tokyo',
+                },
+                'end': {
+                    'date': end_event_date.strftime('%Y-%m-%d'),
+                    'timeZone': 'Asia/Tokyo',
+                },
+            })
+
+        # Google Calendarにイベントを追加
         for event in events:
             created_event = service.events().insert(calendarId='primary', body=event).execute()
-            print('Event created: %s' % (created_event.get('htmlLink'))) 
-        
+            print(f'Event created: {created_event.get("htmlLink")}')
+
     params = {
         'crop_name_en': crop_name_en,
         'crop_name_ja': name_list[crop_name_en],
