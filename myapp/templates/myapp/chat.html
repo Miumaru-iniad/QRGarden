@@ -28,7 +28,7 @@
                 <div class="hidden flex-none lg:block">
                     <ul class="menu menu-horizontal">
                         <!-- Navbar menu content here -->
-                        <li class="text-white"><a href="{% url 'top' crop_name_en %}">トマトについて知る</a></li>
+                        <li class="text-white"><a href="{% url 'top' crop_name_en %}">{{ crop_name_ja }}について知る</a></li>
                         <li class="text-white"><a href="{% url 'chat' crop_name_en %}">AIに育て方を聞く</a></li>
                         <li class="text-white"><a href="{% url 'schedule' crop_name_en %}">スケジュールを確認</a></li>
                     </ul>
@@ -39,7 +39,7 @@
             <label for="my-drawer-3" aria-label="close sidebar" class="drawer-overlay"></label>
             <ul class="menu bg-base-200 min-h-full w-80 p-4">
                 <!-- Sidebar content here -->
-                <li class="text-[#CA3B3B]"><a href="{% url 'top' crop_name_en %}">トマトについて知る</a></li>
+                <li class="text-[#CA3B3B]"><a href="{% url 'top' crop_name_en %}">{{ crop_name_ja }}について知る</a></li>
                 <li class="text-[#CA3B3B]"><a href="{% url 'chat' crop_name_en %}">AIに育て方を聞く</a></li>
                 <li class="text-[#CA3B3B]"><a href="{% url 'schedule' crop_name_en %}">スケジュールを確認</a></li>
             </ul>
@@ -60,8 +60,8 @@
         <div class="input-container">
             <form method="post" action="{% url 'chat' crop_name_en=crop_name_en %}">
                 {% csrf_token %}
-                <input type="text" name="message" id="user-input" placeholder="メッセージを入力してください...">
-                <button type="submit">送信</button>
+                <input type="text" name="message" id="user-input" placeholder="メッセージを入力してください..." class="input input-bordered w-full max-w-xs mt-8 ml-8" />
+                <button class="btn btn-outline btn-info pl-10 pr-10" type="submit">送信</button>
             </form>
         </div>
     </div>
